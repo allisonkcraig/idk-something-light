@@ -3,4 +3,4 @@ env/
 *.pyc
 *.pyd
 *secrets*
-
+secrets.sh

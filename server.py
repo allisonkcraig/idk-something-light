@@ -4,7 +4,6 @@ from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, redirect, request, flash, session, url_for
 
-from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Rating, connect_to_db, db
 
@@ -117,18 +116,27 @@ def loggin_page():
 
 @app.route('/login', methods=['POST'])
 def process_login():
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email_input = request.form.get("email")
+    pword_input = request.form.get("password")
 
-    user_info = User.user_auth(email, password)
-    user_id = user_info[0]
-    user_email = user_info[1]
+    user = User.query.filter(User.email == email_input).first()
 
-    if user_email != None:
-        session['user_id'] = user_id
-        return render_template("homepage.html", user_id=user_id, email=user_email)
+    if user:
+        if pword_input != user.password:
+            flash("Your email and password did not match our records.")
+            return redirect("/login")
+        else:
+            current_user = User.query.filter_by(email=email_input).first()
+            current_user_dict = current_user.__dict__
+            session['current_user_id'] = current_user_dict['user_id']
+            print session['current_user_id']
+            session['logged_in_customer_email'] = email_input
+            return redirect("/profile")
+        
     else:
-        return render_template("register.html", user_id=user_id)   
+        flash("Your email and password did not match our records.")
+        return redirect("/login") 
+         
 
 @app.route('/logout')
 def logout_page():
@@ -157,7 +165,5 @@ if __name__ == "__main__":
 
     connect_to_db(app)
 
-    # Use the DebugToolbar
-    DebugToolbarExtension(app)
 
     app.run()
