@@ -1,12 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Ratings</h1>
+<form class="form-signin" action="/register" method="POST">
 
-<h2>Beer</h2>
-<p><a href="/movies">View all Beers</a></p>
+  <center><h2 class="heading-titles">Please Register</h2></center>
 
-<h2>Users</h2>
-<p><a href="/users">View all Users</a></p>
+  <div class="form-group col-md-6 col-md-offset-3">
+    <label for="email-field">Email Address</label>
+    <input type="email"
+    name="email"
+    class="form-control input-lg"
+    placeholder="Email Address"
+    required
+    autofocus>
+  </div>
+
+  <div class="form-group col-md-6 col-md-offset-3">
+    <label for="password-field">Password</label>
+    <input type="password"
+    name="password"
+    class="form-control input-lg"
+    placeholder="Password"
+    required>
+  </div>
+
+  <div class="form-group col-md-6 col-md-offset-3">
+    <label for="fname-field">First Name</label>
+    <input type="text"
+    name="fname"
+    class="form-control input-lg"
+    placeholder="First Name"
+    required>
+  </div>
+
+  <button class="btn btn-lg log-btn col-md-4 col-md-offset-4" type="submit">Submit
+  </button>
+
+</form>
 
 {% endblock %}

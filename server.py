@@ -4,13 +4,20 @@ from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, redirect, request, flash, session, url_for
 
+import brewerydb
+
+import os
+
+BREWERY_DB_KEY= os.environ['BREWERY_DB_KEY']
+
+app = Flask(__name__)
+app.secret_key = os.environ['APP_KEY']
 
 from model import User, Rating, connect_to_db, db
 
-app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
@@ -37,7 +44,7 @@ def beers_list_page():
 
 @app.route('/beer-detail/<int:id_beer>', methods=["GET"])
 def beer_detail_page(id_beer):
-    """Individual Movie Info Page.
+    """Individual Beer Info Page.
 
 
         1.Given a user U who has not rated beer M, find all other users who have rated that beer.
@@ -89,21 +96,6 @@ def beer_detail_page_score(id_beer):
     #will need to pass beer query information through jinja into template
 
 
-@app.route('/user-list')
-def user_list_page():
-    """List of all users in a pretty pretty table."""
-
-    users = User.query.all()
-    return render_template("user-list.html", users=users)
-
-
-@app.route('/user-profile/<int:id_user>')
-def user_detail_page(id_user):
-    """User information on a  pretty pretty table."""
-    user_id = id_user
-    user = User.query.filter(User.user_id == user_id).one()
-    ratings = Rating.query.filter(Rating.user_id == user_id).all()
-    return render_template("user-detail.html", user=user, ratings=ratings)
 
 
 @app.route('/login', methods=['GET'])
@@ -136,7 +128,7 @@ def process_login():
     else:
         flash("Your email and password did not match our records.")
         return redirect("/login") 
-         
+
 
 @app.route('/logout')
 def logout_page():
@@ -147,14 +139,64 @@ def logout_page():
     return render_template("homepage.html")
 
 
-@app.route('/registration')
-def register_page():
-    """Register new users in the database.
-        check that email is not already in database
-        and either add to database or ask to loggin if email exists.
-    """
+@app.route("/register", methods=["GET"])
+def show_registration():
+    """Show register form."""
 
     return render_template("register.html")
+
+
+@app.route("/register", methods=["POST"])
+def process_registration():
+    """Log user into site.
+    Find the user's login credentials look up the user, and store them in the session."""
+
+    email_input = request.form.get("email")
+
+    user = User.query.filter(User.email == email_input).first()
+    if user != None:
+        flash("There is already a user with that email address!")
+        return redirect("/register")
+
+    pword_input = request.form.get("password")
+    fname_input = request.form.get("fname")
+
+    user_to_add = User(
+        email=email_input,
+        password=pword_input,
+        fname=fname_input
+        )
+
+    db.session.add(user_to_add)
+    db.session.commit() 
+
+
+    # add_user(email_input, password_input, fname_input)
+    session['logged_in_customer_email'] = email_input
+
+    flash("Thanks for registering!")
+
+    user = User.query.filter(User.email == email_input).first()
+
+    session['current_user_id'] = user.user_id
+
+    return redirect("/profile")
+
+
+@app.route('/profile')
+def user_profile_page():
+    """Display user information and saved blocks"""
+
+    user_email = session['logged_in_customer_email']
+
+    user = User.query.filter(User.email==user_email).one()
+    current_user_id = user.user_id
+
+
+    ratings = Rating.query.filter(Rating.user_id==current_user_id).all()
+
+    return render_template("profile.html", user=user, session=session, ratings=ratings)
+
 
 
 

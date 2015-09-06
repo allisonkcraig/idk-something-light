@@ -1,6 +1,6 @@
-# BreweryDB API Wrapper from: https://github.com/yarian/brewerydb
+# BreweryDB API Wrapper https://github.com/yarian/brewerydb
 
-import requests
+
 
 DEFAULT_BASE_URI = "http://api.brewerydb.com/v2"
 BASE_URI = ""
