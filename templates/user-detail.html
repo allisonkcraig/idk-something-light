@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="page-title">User Detail</h1>
+{% if email is defined %}
+{{ user.email }}
+{% endif %}
+
+<h2>Age: {{ user.age }}</h2>
+
+<h2>Zipcode: {{ user.zipcode }}</h2>
+
+<h2>Movies Rated</h2>
+    <table class="table-striped table-hover"> 
+        <tr>
+            <th class="col-md-2">Movie</th>
+            <th class="col-md-2">Score</th>
+            <th class="col-md-2">IMDB</th>
+        </tr>
+    
+    {% for rating in ratings %}
+        <tr> 
+            <td>
+                {{ rating.movie.title }} 
+            </td>
+            <td>
+                {{ rating.score }}
+            </td>
+            <td>
+                <a href="{{ rating.movie.imdb_url }}" target="_blank">IMDB</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+    </table>
+{% endblock %}

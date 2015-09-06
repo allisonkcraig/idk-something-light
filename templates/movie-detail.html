@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if session['user_id'] is defined %}
+    SHOW THE NEW STUFF
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h1 class="page-title">{{ movie.title }} Details</h1>
+
+{% if session['user_id'] is defined %}
+    <h3>Submit A Score</h3>
+    <form action='/movie-detail/{{ movie.movie_id }}' id="id_movie" method="POST">
+        <br>
+            <label><input type="radio" name="score" value=1 >1<img class="tiny-mingos" src="../static/flamingo.png"></label>
+        <br>    
+            <label><input type="radio" name="score" value=2 >2<img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"></label>
+        <br>    
+            <label><input type="radio" name="score" value=3 >3<img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"></label>
+        <br>    
+            <label><input type="radio" name="score" value=4 >4<img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"></label>
+        <br>    
+            <label><input type="radio" name="score" value=5 >5<img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"><img class="tiny-mingos" src="../static/flamingo.png"></label>
+        </br><button type="submit" class="btn btn-default" >Submit Your Score!</button>
+    </form>
+
+{% endif %}
+
+<h2>Release Date: {{ movie.released_at }}</h2>
+
+<h2>IMDB: <a href="{{ movie.imdb_url }}">{{ movie.imdb_url }}</a></h2>
+
+
+<h2>Scores: </h2>
+ <table class="table-striped table-hover"> 
+        <tr>
+            <th>Score</th>
+            <th>User ID</th>
+        </tr>
+    
+    {% for rating in ratings %}
+        <tr> 
+            <td>
+                {{ rating.score }} 
+            </td>
+            <td><a href="/user-profile/{{ rating.user_id }}" id="id_user">{{ rating.user_id }}</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+    </table>
+
+<!-- Here we check if user is logged in and allow to give score.-->
+
+
+
+
+{% endblock %}
