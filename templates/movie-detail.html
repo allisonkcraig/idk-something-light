@@ -16,11 +16,11 @@
   {% endif %}
 {% endwith %}
 
-<h1 class="page-title">{{ movie.title }} Details</h1>
+<h1 class="page-title">{{ beer.title }} Details</h1>
 
 {% if session['user_id'] is defined %}
     <h3>Submit A Score</h3>
-    <form action='/movie-detail/{{ movie.movie_id }}' id="id_movie" method="POST">
+    <form action='/beer-detail/{{ beer.beer_id }}' id="id_beer" method="POST">
         <br>
             <label><input type="radio" name="score" value=1 >1<img class="tiny-mingos" src="../static/flamingo.png"></label>
         <br>    
@@ -36,9 +36,6 @@
 
 {% endif %}
 
-<h2>Release Date: {{ movie.released_at }}</h2>
-
-<h2>IMDB: <a href="{{ movie.imdb_url }}">{{ movie.imdb_url }}</a></h2>
 
 
 <h2>Scores: </h2>

@@ -5,18 +5,18 @@
     <ul>
       <table class="table-striped table-hover"> 
         <tr>
-            <th class="col-md-3">Movie Title</th>
+            <th class="col-md-3">Beer ID</th>
             <th class="col-md-3">Movie Year</th>
             <th class="col-md-3">IMDB Link</th>
         </tr>
     
-    {% for movie in movies %}
+    {% for beer in beers %}
         <tr> 
             <td>
-                <a href="/movie-detail/{{ movie.movie_id }}" id="id_movie">{{ movie.title }} 
+                <a href="/beer-detail/{{ beer.beer_id }}" id="id_beer">{{ beer.title }} 
             </td>
-            <td>{{ movie.released_at }}</td>
-            <td><a href="{{ movie.imdb_url }}">{{ movie.imdb_url }}</a>
+            <td>{{ beer.beer_name }}</td>
+            <td><a href="{{ beer.imdb_url }}">{{ beer.style }}</a>
             </td>
         </tr>
     {% endfor %}

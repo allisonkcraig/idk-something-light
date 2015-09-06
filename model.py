@@ -41,31 +41,16 @@ class User(db.Model):
         return "<User user_id= %s email= %s>" % (self.user_id, self.email)
 
 
-class Movie(db.Model):
-    """Movie Table of ratings website."""
-    
-    __tablename__ = "Movies"
-
-    movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
-    released_at = db.Column(db.DateTime, nullable=False)
-    imdb_url = db.Column(db.String(100), nullable=False)
-
-
-    def __repr__(self):
-        """Provide helpful representation when printed."""
-
-        return "<Movie Title= %s Release Date= %s>" % (self.title, self.released_at)
-
-
 class Rating(db.Model):
     """User Ratings of ratings website."""
     
     __tablename__ = "Ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, db.ForeignKey('Movies.movie_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    style_id = db.Column(db.Integer, nullable=False)
+    beer_id = db.Column(db.Integer, nullable=False)
+    beer_name = db.Column(db.String(64), nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
      # Define relationship to user
@@ -73,14 +58,12 @@ class Rating(db.Model):
                            backref=db.backref("Ratings", order_by=rating_id))
 
     # Define relationship to movie
-    movie = db.relationship("Movie",
-                            backref=db.backref("Ratings", order_by=rating_id))
 
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Movie ID= %s User ID= %s Score= %s>" % (self.movie_id, self.user_id, self.score)
+        return "<Beer ID= %s User ID= %s Score= %s>" % (self.beer_id, self.user_id, self.score)
 
     # @classmethod
     # def add_rating_to_db(cls, score, user_id, movie_id):
@@ -93,8 +76,8 @@ class Rating(db.Model):
         return user_rating_list
 
 
-    def query_for_user_who_rated_movie(movie_id):
-        user_list = Rating.query.filter(Rating.movie_id == movie_id)
+    def query_for_user_who_rated_beer(movie_id):
+        user_list = Rating.query.filter(Rating.beer_id == beer_id)
         pass
 
 # Helper functions
@@ -103,7 +86,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ratings.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///idksl.db'
     db.app = app
     db.init_app(app)
 

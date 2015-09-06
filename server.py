@@ -6,7 +6,7 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import User, Rating, Movie, connect_to_db, db
+from model import User, Rating, connect_to_db, db
 
 app = Flask(__name__)
 
@@ -27,32 +27,32 @@ def index():
 
     return render_template('homepage.html')
 
-@app.route('/movie-list')
-def movies_list_page():
+@app.route('/beer-list')
+def beers_list_page():
     """Movie List Page. Can Organize Movie info in a table that you can Organize by title or release date
         WILL NEED ROUTES FOR AJAX
     """
-    movies = Movie.query.order_by(Movie.title).all()
-    return render_template('movies-list.html', movies=movies)
+    beers = Movie.query.order_by(Movie.title).all()
+    return render_template('beers-list.html', beers=beers)
 
 
-@app.route('/movie-detail/<int:id_movie>', methods=["GET"])
-def movie_detail_page(id_movie):
+@app.route('/beer-detail/<int:id_beer>', methods=["GET"])
+def beer_detail_page(id_beer):
     """Individual Movie Info Page.
 
 
-        1.Given a user U who has not rated movie M, find all other users who have rated that movie.
-        2.For each other user O, find the movies they have rated in common with user U.
-        3.Pair up the common movies, then feed each pair list into the Pearson function to find similarity S.
+        1.Given a user U who has not rated beer M, find all other users who have rated that beer.
+        2.For each other user O, find the beers they have rated in common with user U.
+        3.Pair up the common beers, then feed each pair list into the Pearson function to find similarity S.
         4.Rank the users by their similarities, and find the user with the highest similarity, O.
-        5.Multiply the similarity coefficient of user O with their rating for movie M. This is your predicted rating.
+        5.Multiply the similarity coefficient of user O with their rating for beer M. This is your predicted rating.
     """
 
-    movie = Movie.query.filter(Movie.movie_id == id_movie).one()
-    ratings = Rating.query.filter(Rating.movie_id == id_movie)
+    beer = Movie.query.filter(Movie.beer_id == id_beer).one()
+    ratings = Rating.query.filter(Rating.beer_id == id_beer)
 
      #will return None if none   
-    user_who_have_rated = ratings.filter(Rating.movie_id == id_movie).all()
+    user_who_have_rated = ratings.filter(Rating.beer_id == id_beer).all()
 
     #Average Rating
     #Pearson Prediction
@@ -66,28 +66,28 @@ def movie_detail_page(id_movie):
 
 
 
-    return render_template("movie-detail.html", movie=movie, ratings=ratings)
-    #will need to pass movie query information through jinja into template
+    return render_template("beer-detail.html", beer=beer, ratings=ratings)
+    #will need to pass beer query information through jinja into template
 
 
 #to add a rating to db
-@app.route('/movie-detail/<int:id_movie>',methods=["POST"])
-def movie_detail_page_score(id_movie):
+@app.route('/beer-detail/<int:id_beer>',methods=["POST"])
+def beer_detail_page_score(id_beer):
     """Individual Movie Info Page."""
-    movie = Movie.query.filter(Movie.movie_id == id_movie).one()
+    beer = Movie.query.filter(Movie.beer_id == id_beer).one()
     
     score = request.form.get('score')
     user_id = session['user_id']
-    movie_id = movie.movie_id
+    beer_id = beer.beer_id
 
-    score_to_add = Rating(user_id=user_id, movie_id=movie_id, score=score) 
+    score_to_add = Rating(user_id=user_id, beer_id=beer_id, score=score) 
     db.session.add(score_to_add)
     db.session.commit()    
 
     flash('You added a score!')
-    # return redirect('/movie-detail/%s' % movie_id)
-    return redirect(url_for('movie_detail_page', id_movie=movie_id))
-    #will need to pass movie query information through jinja into template
+    # return redirect('/beer-detail/%s' % beer_id)
+    return redirect(url_for('beer_detail_page', id_beer=beer_id))
+    #will need to pass beer query information through jinja into template
 
 
 @app.route('/user-list')
