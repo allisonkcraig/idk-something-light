@@ -54,7 +54,8 @@ def beer_detail_page(id_beer):
         5.Multiply the similarity coefficient of user O with their rating for beer M. This is your predicted rating.
     """
 
-    beer = Movie.query.filter(Movie.beer_id == id_beer).one()
+    # MAKE API CALL TO BREWERDB HERE
+    # beer = Movie.query.filter(Movie.beer_id == id_beer).one()
     ratings = Rating.query.filter(Rating.beer_id == id_beer)
 
      #will return None if none   
